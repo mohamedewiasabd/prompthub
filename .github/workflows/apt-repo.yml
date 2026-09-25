@@ -39,7 +39,7 @@ jobs:
           print('decoded bytes :', len(raw))
           PY
           gpg --batch --import /tmp/key.asc
-          echo "$APT_GPG_PASSPHRASE" > /tmp/apt-pass
+          echo "$APT_GPG_PASSPHRASE" | base64 -d > /tmp/apt-pass
           gpg --batch --with-colons --list-secret-keys | grep -q E82B0F20F89891B62B3614E3EB359AE49FD30725 && echo "key present OK"
 
       - name: Resolve version
