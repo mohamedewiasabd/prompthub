@@ -30,11 +30,22 @@ jobs:
           echo "$APT_GPG_PRIVATE_KEY" | gpg --batch --import
           echo "$APT_GPG_PASSPHRASE" > /tmp/apt-pass
 
+      - name: Resolve version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "release" ]; then
+            TAG="${GITHUB_REF_NAME}"
+          else
+            TAG="$(gh release view --json tagName -q .tagName)"
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+
       - name: Download .deb from release
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
           mkdir -p deb_stage
-          gh release download "$GITHUB_REF_NAME" \
+          gh release download "$TAG" \
             --pattern "prompthub_${VERSION}_amd64.deb" --dir deb_stage
           ls -la deb_stage
         env:
@@ -42,7 +53,6 @@ jobs:
 
       - name: Build signed APT repo
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
           bash packaging/apt/build-apt-repo.sh \
             --deb deb_stage/prompthub_${VERSION}_amd64.deb \
             --version "$VERSION" \
@@ -62,7 +72,7 @@ jobs:
           find . -maxdepth 1 -type f ! -name '.git' -delete 2>/dev/null || true
           cp -a /tmp/apt-web/. .
           git add -A
-          git -c user.name="PromptHub Bot" -c user.email="mohamedewiasabd@gmail.com" commit -q -m "APT repo: ${GITHUB_REF_NAME}" || echo "لا تغييرات"
+          git -c user.name="PromptHub Bot" -c user.email="mohamedewiasabd@gmail.com" commit -q -m "APT repo: ${TAG}" || echo "لا تغييرات"
           git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/mohamedewiasabd/prompthub.git"
           git push -q --force origin apt-repo
         env:

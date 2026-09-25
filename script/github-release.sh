@@ -52,13 +52,16 @@ fi
 echo "✓ الإصدار id=$RELEASE_ID"
 
 # ═══ رفع كل الأصول ═══
+fail=0
 for f in "$STAGE"/*; do
   [ -f "$f" ] || continue
-  case "$f" in *.json) continue ;; esac
+  case "$(basename "$f")" in *.json|create.out) continue ;; esac
   name="$(basename "$f")"
-  echo "  ↑ رفع $name …"
-  curl -s -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/octet-stream" \
-    -X POST "$API/releases/$RELEASE_ID/assets?name=$name" \
-    --data-binary @"$f" -o /dev/null
+  code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $TOKEN" \
+    -H "Accept: application/vnd.github+json" \
+    -H "Content-Type: application/octet-stream" \
+    -X POST "https://uploads.github.com/repos/$REPO/releases/$RELEASE_ID/assets?name=$name" \
+    --data-binary @"$f")
+  if [ "$code" = "201" ]; then echo "  ✓ $name"; else echo "  ✗ $name (HTTP $code)"; fail=1; fi
 done
-echo "✓ رُفع كل الأصول إلى $REPO/releases/tag/$TAG"
+[ "$fail" = "0" ] && echo "✓ رُفع كل الأصول إلى $REPO/releases/tag/$TAG" || { echo "⚠ فشل رفع بعض الأصول"; exit 1; }
