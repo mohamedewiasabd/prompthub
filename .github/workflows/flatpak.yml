@@ -7,36 +7,17 @@ on:
 
 jobs:
   flatpak:
+    name: "Flatpak"
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [x86_64]
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
+      options: --privileged
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build Flatpak with Flathub tooling
-        uses: flathub/flatpak-github-actions/flatpak-builder@v6
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
-          bundle: prompthub-${{ matrix.arch }}.flatpak
+          bundle: prompthub.flatpak
           manifest-path: packaging/flatpak/io.github.mohamedewiasabd.prompthub.yml
-          runtime-repo: https://flathub.org/repo/flathub.flatpakrepo
-          cache: true
-
-      - name: Validate manifest & AppStream metadata
-        uses: flathub/flatpak-github-actions/validate@v2
-        with:
-          manifest-path: packaging/flatpak/io.github.mohamedewiasabd.prompthub.yml
-          app-id: io.github.mohamedewiasabd.prompthub
-          file-of-metadata: ../share/metainfo/io.github.mohamedewiasabd.prompthub.metainfo.xml
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: prompthub-flatpak-${{ matrix.arch }}
-          path: prompthub-${{ matrix.arch }}.flatpak
-          if-no-files-found: error
-
-      - name: Check bundle content
-        run: |
-          ls -lh prompthub-${{ matrix.arch }}.flatpak
-          flatpak build-bundle --help >/dev/null 2>&1 && echo "flatpak CLI available" || true
+          artifact-name: prompthub-flatpak-x86_64
+          cache-key: flatpak-builder-${{ github.sha }}
+          verbose: true
