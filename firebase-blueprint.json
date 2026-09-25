@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Category": {
+      "title": "Category",
+      "description": "AI Prompt Category classification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique category identifier" },
+        "name": { "type": "string", "description": "Category Arabic display name" },
+        "nameEn": { "type": "string", "description": "Category English name" },
+        "slug": { "type": "string", "description": "Category URL slug" },
+        "description": { "type": "string", "description": "Category description and SEO summary" },
+        "icon": { "type": "string", "description": "Lucide icon name" },
+        "color": { "type": "string", "description": "Tailwind color gradient classes" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last updated timestamp" }
+      },
+      "required": ["id", "name", "slug", "description", "icon", "createdAt", "updatedAt"]
+    },
+    "Prompt": {
+      "title": "Prompt",
+      "description": "AI Prompt template and metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique prompt identifier" },
+        "categoryId": { "type": "string", "description": "Associated category ID" },
+        "categorySlug": { "type": "string", "description": "Associated category slug" },
+        "title": { "type": "string", "description": "Arabic prompt title" },
+        "titleEn": { "type": "string", "description": "English prompt title" },
+        "slug": { "type": "string", "description": "Prompt URL slug" },
+        "description": { "type": "string", "description": "Detailed explanation of the prompt" },
+        "promptText": { "type": "string", "description": "Full prompt text with [variables]" },
+        "models": { "type": "array", "description": "Supported AI models (ChatGPT, Claude, Gemini, DeepSeek)" },
+        "targetLanguage": { "type": "string", "description": "ar, en, or both" },
+        "framework": { "type": "string", "description": "Prompt engineering framework used" },
+        "tags": { "type": "array", "description": "SEO keywords and tags" },
+        "variables": { "type": "array", "description": "Dynamic user customizable variables" },
+        "sampleOutput": { "type": "string", "description": "Sample expected AI response" },
+        "tips": { "type": "array", "description": "Best practice tips for optimal results" },
+        "difficulty": { "type": "string", "enum": ["مبتدئ", "متوسط", "متقدم"], "description": "Prompt complexity" },
+        "featured": { "type": "boolean", "description": "Whether prompt is highlighted" },
+        "views": { "type": "number", "description": "View count" },
+        "copies": { "type": "number", "description": "Copy count" },
+        "likes": { "type": "number", "description": "Like count" },
+        "ratingAverage": { "type": "number", "description": "Average user rating out of 5" },
+        "ratingCount": { "type": "number", "description": "Total number of reviews" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["id", "categoryId", "categorySlug", "title", "slug", "description", "promptText", "models", "targetLanguage", "tags", "variables", "createdAt", "updatedAt"]
+    },
+    "PromptReview": {
+      "title": "PromptReview",
+      "description": "User review and rating for a prompt",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique review identifier" },
+        "promptId": { "type": "string", "description": "Target prompt ID" },
+        "promptTitle": { "type": "string", "description": "Target prompt title" },
+        "userName": { "type": "string", "description": "Name of the reviewer" },
+        "rating": { "type": "number", "description": "Star rating 1 to 5" },
+        "comment": { "type": "string", "description": "Review comment" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Review submission timestamp" }
+      },
+      "required": ["id", "promptId", "userName", "rating", "comment", "createdAt"]
+    },
+    "MasterStore": {
+      "title": "MasterStore",
+      "description": "Cloud synchronized master store holding categories, prompts, reviews, and settings",
+      "type": "object",
+      "properties": {
+        "categories": { "type": "array", "description": "List of all categories" },
+        "prompts": { "type": "array", "description": "List of all prompts" },
+        "reviews": { "type": "array", "description": "List of all prompt reviews" },
+        "adSenseSettings": { "type": "object", "description": "Google AdSense configuration" },
+        "pixelSettings": { "type": "object", "description": "Marketing pixel scripts configuration" },
+        "adminSettings": { "type": "object", "description": "Admin preferences and flags" },
+        "lastSynced": { "type": "string", "format": "date-time", "description": "Last cloud synchronization timestamp" }
+      },
+      "required": ["categories", "prompts", "lastSynced"]
+    }
+  },
+  "firestore": {
+    "/system/prompthub-master-store": {
+      "schema": "MasterStore",
+      "description": "Global synchronized data store for PromptHub cloud persistence"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Individual category document"
+    },
+    "/prompts/{promptId}": {
+      "schema": "Prompt",
+      "description": "Individual prompt document"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "PromptReview",
+      "description": "Individual review document"
+    }
+  }
+}

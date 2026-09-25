@@ -1,0 +1,6 @@
+{
+  "name": "مكتبة البرومبتات الذكية | PromptHub",
+  "description": "منصة مجانية 100% لعرض واكتشاف أفضل أوامر الذكاء الاصطناعي (Prompts) مع شروحات تفصيلية وروابط مباشرة وتوليد ذكي مدعوم بنماذج Gemini ومحسنة لمحركات البحث وروبوتات الذكاء الاصطناعي.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

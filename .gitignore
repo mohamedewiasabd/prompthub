@@ -1,0 +1,55 @@
+# Dependencies & build
+node_modules/
+.next/
+out/
+coverage/
+dist/
+tsconfig.tsbuildinfo
+
+# Environments (contains secrets: GEMINI_API_KEY, admin password...)
+.env*
+!.env.example
+
+# Local runtime data (contains adminSettings incl. password hash)
+.data/
+
+# Vercel link metadata
+.vercel/
+
+# Firebase cache
+.firebase/
+
+# Release binaries (produced by CI) — never pushed
+release/
+
+# Android build outputs
+android/.gradle/
+android/local.properties
+android/app/build/
+android/app/release/
+android/app/src/main/assets/
+android/build/
+android/capacitor-cordova-android-plugins/build/
+*.keystore
+*.jks
+keystore.properties
+
+# iOS build outputs
+ios/App/build/
+ios/App/Pods/
+ios/App/App/public/
+ios/App/DerivedData/
+ios/App/App.xcworkspace/
+*.xcuserstate
+
+# Tauri — build outputs & generated schemas & mobile-only icon sets
+src-tauri/target/
+src-tauri/gen/
+src-tauri/icons/android/
+src-tauri/icons/ios/
+
+# Logs & OS
+*.log
+.release-last.log
+.DS_Store
+Thumbs.db

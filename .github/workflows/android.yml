@@ -1,0 +1,59 @@
+name: Android (APK / AAB)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Capacitor sync android
+        run: npx cap sync android
+
+      - name: Build release APK (unsigned) + AAB + debug APK
+        run: |
+          cd android
+          ./gradlew assembleRelease assembleDebug bundleRelease
+
+      - name: Stage artifacts
+        shell: bash
+        run: |
+          mkdir -p release/android
+          RELEASE_APK=$(find android/app/build/outputs/apk/release -name '*.apk' | head -1)
+          AAB=$(find android/app/build/outputs/bundle/release -name '*.aab' | head -1)
+          DEBUG_APK=android/app/build/outputs/apk/debug/app-debug.apk
+          if [ -n "$RELEASE_APK" ]; then cp "$RELEASE_APK" release/android/prompthub-release.apk; fi
+          if [ -n "$AAB" ]; then cp "$AAB" release/android/prompthub-release.aab; fi
+          if [ -f "$DEBUG_APK" ]; then cp "$DEBUG_APK" release/android/prompthub-debug.apk; fi
+          ls -la release/android
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompthub-android
+          path: release/android/
+          if-no-files-found: error
