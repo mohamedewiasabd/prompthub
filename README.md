@@ -26,6 +26,32 @@
 
 التطبيقات الأصلية (Android/iOS/Desktop) قشور WebView تحمّل النسخة المنشورة من الموقع، لأن التطبيق يعتمد على Routes API على الخادم (التوليد والمزامنة السحابية).
 
+## التثبيت على لينكس
+
+### 1) مستودع APT الرسمي (Debian/Ubuntu)
+
+```bash
+sudo install -Dm644 <(curl -L https://mohamedewiasabd.github.io/prompthub/pubkey.asc) /etc/apt/keyrings/prompthub.asc
+echo "deb [signed-by=/etc/apt/keyrings/prompthub.asc] https://mohamedewiasabd.github.io/prompthub stable main" | sudo tee /etc/apt/sources.list.d/prompthub.list
+sudo apt update && sudo apt install prompthub
+```
+
+يُبنى المستودع تلقائياً بعد كل إصدار GitHub (سير عمل `apt-repo.yml` → فرع `apt-repo` على Pages).
+
+### 2) Flatpak
+
+```bash
+flatpak install --user ./prompthub.flatpak
+# أو من Flathub بعد القبول:
+flatpak install io.github.mohamedewiasabd.prompthub
+```
+
+حزمة `prompthub.flatpak` تُبنى في كل إصدار GitHub (سير عمل `flatpak.yml`) — حمّلها من صفحة Releases أو من الأثر `prompthub-flatpak-x86_64`.
+
+### 3) Arch (AUR) / Fedora (COPR) / openSUSE (OBS)
+
+ملفات التعبئة جاهزة في `packaging/`: `aur/` (PKGBUILD)، `copr/` (spec)، `obs/` (spec + `_service`). يُقدَّم الرفع فور إنشاء الحسابات المعنية (لا يُنشئ الحسابات شخصياً). راجع `packaging/` لكل قناة.
+
 ## التشغيل محلياً
 
 ```bash

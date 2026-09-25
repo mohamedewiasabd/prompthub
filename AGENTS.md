@@ -20,6 +20,9 @@
 | iOS (iPhone/iPad) | بُنيت عبر CI ✅ (غير مُوقَّعة دون أسرار Apple) | `release/ipa/*.ipa` أو `release/ios/*.app` (سطر `ios.yml`) |
 | Windows سطح المكتب | بُنيت عبر CI ✅ (exe + msi) | `release/desktop/windows/` (سطر `desktop.yml`) |
 | Linux سطح المكتب | بُنيت عبر CI ✅ (deb + AppImage) | `release/desktop/linux/` (سطر `desktop.yml` أو محلياً) |
+| توزيع لينكس (APT) | منشور عبر GitHub Pages ✅ | مستودع Debian/Ubuntu على `https://mohamedewiasabd.github.io/prompthub` (سطر `apt-repo.yml`) |
+| توزيع لينكس (Flatpak) | بُنيت عبر CI ✅ | حزمة `prompthub.flatpak` في Releases (سطر `flatpak.yml`) |
+| توزيع لينكس (AUR/COPR/OBS) | ملفات جاهزة ⏳ تنتظر حسابات المستخدم | `packaging/aur` + `packaging/copr` + `packaging/obs` |
 | macOS سطح المكتب | بُنيت عبر CI ✅ (dmg intel/aarch64) | `release/desktop/macos/` (سطر `desktop.yml`) |
 
 - **طبيعة النواتج الأصلية:** هذا التطبيق Next.js له Routes API على الخادم (Firestore + توليد Gemini) فيستحيل تصديره إحصائياً داخل مشروع أصلي. لذا **الأندرويد/اiOS/سطح المكتب قشور webview تحمّل الموقع الحي** (`web/index.html` يعيد التوجيه، و`capacitor.config.ts` يستخدم `server.url`، و`tauri.conf.json` يشير لـ `../web`). الأصل يضمن بقاء كل خصائص الخادم (التوليد/المزامنة) تعمل دون تغيير.
@@ -88,5 +91,5 @@ md5sum release/android/*.apk release/android/*.aab release/desktop/*/* release/i
 - لا تتجاوز خطوات البند ٥، ولا تنهي الجلسة قبل رفع الويب + الدفع.
 
 ## ٧) مواضع الملفات
-- **تُرفع:** `app/`، `components/`، `lib/`، `types/`، `hooks/`، `public/`، `src-tauri/` (Tauri)، `android/` (عدا مخرجات البناء)، `ios/` (عدا `App/build`)، `capacitor.config.ts`، `web/`، `.github/workflows/` (android.yml + ios.yml + desktop.yml)، `script/`، `firestore.rules`، `firebase.json`.
+- **تُرفع:** `app/`، `components/`، `lib/`، `types/`، `hooks/`، `public/`، `src-tauri/` (Tauri)، `android/` (عدا مخرجات البناء)، `ios/` (عدا `App/build`)، `capacitor.config.ts`، `web/`، `.github/workflows/` (android.yml + ios.yml + desktop.yml + flatpak.yml + apt-repo.yml)، `script/`، `firestore.rules`، `firebase.json`، `packaging/` (حِزَم لينكس: flatpak + aur + copr + obs + apt + linux).
 - **لا تُرفع (محجوبة في `.gitignore`):** `node_modules/`، `.next/`، `.data/`، `.env*`، `.vercel/`، `.firebase/`، `release/`، `android/app/build/`، `ios/App/build/`، `src-tauri/target/`.
