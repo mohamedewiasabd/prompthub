@@ -26,9 +26,21 @@ jobs:
           APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
           APT_GPG_PASSPHRASE: ${{ secrets.APT_GPG_PASSPHRASE }}
         run: |
+          set -e
           umask 077
-          echo "$APT_GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
+          echo "${#APT_GPG_PRIVATE_KEY}" > /tmp/secret-len
+          echo "secret length chars: $(cat /tmp/secret-len)"
+          echo "$APT_GPG_PRIVATE_KEY" > /tmp/key.b64
+          python3 - <<'PY'
+          import base64,hashlib
+          raw=base64.b64decode(open('/tmp/key.b64','rb').read().strip())
+          open('/tmp/key.asc','wb').write(raw)
+          print('decoded sha256:', hashlib.sha256(raw).hexdigest())
+          print('decoded bytes :', len(raw))
+          PY
+          gpg --batch --import /tmp/key.asc
           echo "$APT_GPG_PASSPHRASE" > /tmp/apt-pass
+          gpg --batch --with-colons --list-secret-keys | grep -q E82B0F20F89891B62B3614E3EB359AE49FD30725 && echo "key present OK"
 
       - name: Resolve version
         env:
