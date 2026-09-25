@@ -36,6 +36,7 @@ jobs:
 
       - name: Build Flatpak bundle
         run: |
+          sudo apt-get install -y flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           sudo flatpak install -y --noninteractive flathub org.gnome.Platform//48 org.gnome.Sdk//48
           flatpak-builder --force-clean --repo=./flatpak-repo ./flatpak-build packaging/flatpak/prompthub-ci.yml
