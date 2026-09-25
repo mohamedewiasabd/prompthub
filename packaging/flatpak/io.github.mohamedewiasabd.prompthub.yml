@@ -9,6 +9,7 @@ sdk-extensions:
 
 build-options:
   append-path: /usr/lib/sdk/rust-stable/bin
+  no-network: false
   env:
     CARGO_HOME: /run/build/prompthub/cargo
     RUST_BACKTRACE: '1'
