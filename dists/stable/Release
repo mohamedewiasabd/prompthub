@@ -1,0 +1,24 @@
+Architectures: amd64
+Codename: stable
+Components: main
+Date: Fri, 25 Sep 2026 12:00:34 +0000
+Description: مكتبة البرومبتات الذكية — مستودع APT
+Label: PromptHub
+Origin: PromptHub
+Suite: stable
+MD5Sum:
+ cc4ccd7109a7ee317763ce43bd2029bb              221 Release
+ 678323c13fecbe87aed8fdbbe138106e              477 main/binary-amd64/Packages
+ 303e0bfdb7a1b2fdd4a5a383d4cf2303              375 main/binary-amd64/Packages.gz
+SHA1:
+ 72949ffaed870becb46e8e9bdba5e04f95203154              221 Release
+ d1435ffb27b35d77dbbb9f0cb241d8c9a580ad16              477 main/binary-amd64/Packages
+ a9020edd731bc2ffbee1ec864fc427d24650ace4              375 main/binary-amd64/Packages.gz
+SHA256:
+ b54e7ada561a3d127d25d4888bcf74137c59745b7ac2c61d13c61afe48777cf2              221 Release
+ 9f740d9908d4f7a7cbda6651707b68af9485f42ad81fa06ff5d29a08d55165a9              477 main/binary-amd64/Packages
+ 9b03246dc7b29283ef13db1e33a1ffe09d3f37fb769c4f4eb4ddb2833c03d55a              375 main/binary-amd64/Packages.gz
+SHA512:
+ 133d52b4cfd5c37b8f45d68056a7f4e0e646c5b6fd73964d3a0cd62da962654218be3b67f175137d5718872ba2a0c9750e465fcd88d3a8a8efab1d3ea29d408e              221 Release
+ 7f65745fed5645183e686b5852c434751a0cb6a2993cf52e7ffe2804b77bd82ad914f00873296dd9c08c6506f0c10ef2cdfa3fa2f89b3fb91a977839ebc36a8c              477 main/binary-amd64/Packages
+ 46985d26344ccc8cdcadad8763f2d26f3f0ed9a071bc1fb3c005df1481d436e23afa780d64de91a234dbcb06502d7650e7bdb2d82d84718e23dca91e8dbe41db              375 main/binary-amd64/Packages.gz
