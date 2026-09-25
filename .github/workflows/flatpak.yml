@@ -9,15 +9,41 @@ jobs:
   flatpak:
     name: "Flatpak"
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
-      options: --privileged
     steps:
       - uses: actions/checkout@v4
-      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+
+      - name: Install build deps (Tauri binary)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libwebkit2gtk-4.1-dev libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Build Tauri release binary
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          cargo build --release --manifest-path src-tauri/Cargo.toml
+          ls -lh src-tauri/target/release/prompthub
+
+      - name: Stage flatpak files
+        run: |
+          rm -rf flatpak-staging && mkdir -p flatpak-staging/icons
+          cp src-tauri/target/release/prompthub flatpak-staging/
+          cp packaging/linux/io.github.mohamedewiasabd.prompthub.desktop flatpak-staging/
+          cp packaging/linux/io.github.mohamedewiasabd.prompthub.metainfo.xml flatpak-staging/
+          cp src-tauri/icons/32x32.png src-tauri/icons/64x64.png flatpak-staging/icons/
+          cp src-tauri/icons/128x128.png src-tauri/icons/128x128@2x.png flatpak-staging/icons/
+          ls -la flatpak-staging
+
+      - name: Build Flatpak bundle
+        run: |
+          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install -y --noninteractive flathub org.gnome.Platform//48 org.gnome.Sdk//48
+          flatpak-builder --force-clean --repo=./flatpak-repo ./flatpak-build packaging/flatpak/prompthub-ci.yml
+          flatpak build-bundle ./flatpak-repo ./prompthub.flatpak io.github.mohamedewiasabd.prompthub
+          ls -lh prompthub.flatpak
+
+      - uses: actions/upload-artifact@v4
         with:
-          bundle: prompthub.flatpak
-          manifest-path: packaging/flatpak/io.github.mohamedewiasabd.prompthub.yml
-          artifact-name: prompthub-flatpak-x86_64
-          cache-key: flatpak-builder-${{ github.sha }}
-          verbose: true
+          name: prompthub-flatpak-x86_64
+          path: prompthub.flatpak
+          if-no-files-found: error
