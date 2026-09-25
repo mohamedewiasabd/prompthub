@@ -1,0 +1,79 @@
+name: APT Repository (Debian/Ubuntu)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-apt-repo:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install packaging tools
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y apt-utils dpkg-dev gnupg
+
+      - name: Prepare signing key
+        env:
+          APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
+          APT_GPG_PASSPHRASE: ${{ secrets.APT_GPG_PASSPHRASE }}
+        run: |
+          umask 077
+          echo "$APT_GPG_PRIVATE_KEY" | gpg --batch --import
+          echo "$APT_GPG_PASSPHRASE" > /tmp/apt-pass
+
+      - name: Download .deb from release
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p deb_stage
+          gh release download "$GITHUB_REF_NAME" \
+            --pattern "prompthub_${VERSION}_amd64.deb" --dir deb_stage
+          ls -la deb_stage
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Build signed APT repo
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          bash packaging/apt/build-apt-repo.sh \
+            --deb deb_stage/prompthub_${VERSION}_amd64.deb \
+            --version "$VERSION" \
+            --out apt-www \
+            --gpg-fpr E82B0F20F89891B62B3614E3EB359AE49FD30725 \
+            --pass-file /tmp/apt-pass
+
+      - name: Publish to apt-repo branch
+        run: |
+          git config user.name "PromptHub Bot"
+          git config user.email "mohamedewiasabd@gmail.com"
+          cp -a apt-www /tmp/apt-web
+          git checkout -q --orphan apt-repo
+          git reset -q
+          git rm -rfq --cached . 2>/dev/null || true
+          rm -rf .github .data dists pool pubkey.asc script src-tauri android ios app components lib types hooks public web packaging src 2>/dev/null || true
+          find . -maxdepth 1 -type f ! -name '.git' -delete 2>/dev/null || true
+          cp -a /tmp/apt-web/. .
+          git add -A
+          git -c user.name="PromptHub Bot" -c user.email="mohamedewiasabd@gmail.com" commit -q -m "APT repo: ${GITHUB_REF_NAME}" || echo "لا تغييرات"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/mohamedewiasabd/prompthub.git"
+          git push -q --force origin apt-repo
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Enable GitHub Pages (best effort)
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/mohamedewiasabd/prompthub/pages \
+            -d '{"source":{"branch":"apt-repo","path":"/"}}' || true

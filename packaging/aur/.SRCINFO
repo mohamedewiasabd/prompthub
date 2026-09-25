@@ -1,0 +1,24 @@
+pkgbase = prompthub
+	pkgdesc = مكتبة البرومبتات الذكية — منصة عربية لبرومبتات الذكاء الاصطناعي مع توليد ذكي عبر Gemini (Arabic AI prompts library with Gemini)
+	pkgver = 1.0.0
+	pkgrel = 1
+	url = https://github.com/mohamedewiasabd/prompthub
+	install = 
+	arch = x86_64
+	license = custom:AllRightsReserved
+	makedepends = rust
+	makedepends = cargo
+	makedepends = glib2
+	makedepends = gdk-pixbuf2
+	depends = webkit2gtk-4.1
+	depends = gtk3
+	depends = librsvg2
+	depends = libayatana-appindicator
+	depends = openssl
+	provides = prompthub
+	conflicts = prompthub-bin
+	options = strip
+	source = prompthub::git+https://github.com/mohamedewiasabd/prompthub.git#tag=v1.0.0
+	sha256sums = SKIP
+
+pkgname = prompthub

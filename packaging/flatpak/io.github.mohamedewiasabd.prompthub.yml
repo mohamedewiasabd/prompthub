@@ -1,0 +1,41 @@
+id: io.github.mohamedewiasabd.prompthub
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: prompthub
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin
+  env:
+    CARGO_HOME: /run/build/prompthub/cargo
+    RUST_BACKTRACE: '1'
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+  - --device=dri
+  - --talk-name=org.freedesktop.Notifications
+  - --filesystem=xdg-run/dconf
+  - --talk-name=ca.desrt.dconf
+
+modules:
+  - name: prompthub
+    buildsystem: simple
+    build-commands:
+      - cargo build --release --manifest-path ./src-tauri/Cargo.toml
+      - install -Dm755 ./src-tauri/target/release/prompthub /app/bin/prompthub
+      - install -Dm644 ./packaging/linux/io.github.mohamedewiasabd.prompthub.desktop /app/share/applications/io.github.mohamedewiasabd.prompthub.desktop
+      - install -Dm644 ./packaging/linux/io.github.mohamedewiasabd.prompthub.metainfo.xml /app/share/metainfo/io.github.mohamedewiasabd.prompthub.metainfo.xml
+      - install -Dm644 ./src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/io.github.mohamedewiasabd.prompthub.png
+      - install -Dm644 ./src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.mohamedewiasabd.prompthub.png
+      - install -Dm644 ./src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/io.github.mohamedewiasabd.prompthub.png
+    sources:
+      - type: git
+        url: https://github.com/mohamedewiasabd/prompthub.git
+        tag: v1.0.0
+        commit: 937000150fa487156f8b90b88d8e1ba9099180da

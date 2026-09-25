@@ -1,0 +1,12 @@
+<services>
+  <service name="tar_scm" mode="buildtime">
+    <param name="scm">git</param>
+    <param name="url">https://github.com/mohamedewiasabd/prompthub.git</param>
+    <param name="scm-tag">v1.0.0</param>
+    <param name="filename">prompthub</param>
+  </service>
+  <service name="recompress" mode="buildtime">
+    <param name="file">prompthub*.tar</param>
+    <param name="compression">gz</param>
+  </service>
+</services>

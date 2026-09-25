@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=PromptHub
+Name[ar]=مكتبة البرومبتات الذكية
+GenericName=AI Prompts Library
+GenericName[ar]=مكتبة برومبتات الذكاء الاصطناعي
+Comment=Browse and discover AI prompts with smart Gemini generation
+Comment[ar]=منصة عربية لعرض واكتشاف برومبتات الذكاء الاصطناعي مع توليد ذكي عبر Gemini
+Exec=prompthub %U
+Terminal=false
+Icon=io.github.mohamedewiasabd.prompthub
+Categories=Utility;Education;Network;
+MimeType=x-scheme-handler/https;
+StartupNotify=true
+StartupWMClass=prompthub

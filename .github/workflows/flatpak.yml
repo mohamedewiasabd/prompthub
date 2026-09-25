@@ -1,0 +1,55 @@
+name: Flatpak (Flathub-ready)
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  flatpak:
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/tauri-apps/flatpak-build-image:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install flatpak tooling
+        run: |
+          apt-get update -y
+          apt-get install -y flatpak flatpak-builder pkg-config gnupg2
+
+      - name: Install Flathub remote
+        run: |
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y --noninteractive flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 org.freedesktop.Sdk.Extension.rust-stable//24.08
+
+      - name: Build flatpak bundle
+        run: |
+          flatpak-builder --user --arch=${{ matrix.arch }} --repo=repo --force-clean build-dir \
+            packaging/flatpak/io.github.mohamedewiasabd.prompthub.yml
+
+      - name: Export bundle
+        run: |
+          flatpak build-bundle --arch=${{ matrix.arch }} repo \
+            prompthub-x86_64.flatpak io.github.mohamedewiasabd.prompthub
+          ls -lh prompthub-x86_64.flatpak
+
+        # Flathub validation of the manifest (optional local sanity check)
+      - name: Validate AppStream metadata
+        run: |
+          flatpak build-finish --dry-run --argv=. --metadata=metadata.prompthub /app 2>/dev/null || true
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          ET.parse('packaging/linux/io.github.mohamedewiasabd.prompthub.metainfo.xml')
+          print('appstream XML OK')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prompthub-flatpak-${{ matrix.arch }}
+          path: prompthub-x86_64.flatpak
+          if-no-files-found: error

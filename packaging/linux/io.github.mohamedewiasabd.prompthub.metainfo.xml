@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.mohamedewiasabd.prompthub</id>
+  <launchable type="desktop-id">io.github.mohamedewiasabd.prompthub.desktop</launchable>
+
+  <name>PromptHub</name>
+  <name xml:lang="ar">مكتبة البرومبتات الذكية</name>
+
+  <summary>Arabic platform to discover and generate AI prompts</summary>
+  <summary xml:lang="ar">منصة عربية لعرض واكتشاف برومبتات الذكاء الاصطناعي</summary>
+
+  <description>
+    <p>PromptHub is the free Arabic platform for browsing, discovering and generating AI prompts, with smart prompt generation powered by Google Gemini.</p>
+    <p xml:lang="ar">مكتبة البرومبتات الذكية | PromptHub منصة عربية مجانية لعرض واكتشاف أوامر وبرومبتات الذكاء الاصطناعي مع توليد ذكي عبر Gemini.</p>
+  </description>
+
+  <developer id="io.github.mohamedewiasabd">
+    <name>PromptHub</name>
+  </developer>
+
+  <url type="homepage">https://live-stream-sport.com</url>
+  <url type="bugtracker">https://github.com/mohamedewiasabd/prompthub/issues</url>
+  <url type="vcs-browser">https://github.com/mohamedewiasabd/prompthub</url>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary</project_license>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="1.0.0" date="2026-09-25">
+      <description>
+        <p>First public release with desktop packaging for Linux.</p>
+        <p xml:lang="ar">أول إصدار رسمي مع تعبئة سطح المكتب لنظام لينكس.</p>
+      </description>
+    </release>
+  </releases>
+
+  <provides>
+    <binary>prompthub</binary>
+  </provides>
+</component>
