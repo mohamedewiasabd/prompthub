@@ -38,4 +38,3 @@ modules:
       - type: git
         url: https://github.com/mohamedewiasabd/prompthub.git
         tag: v1.0.0
-        commit: 937000150fa487156f8b90b88d8e1ba9099180da
