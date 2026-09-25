@@ -65,5 +65,6 @@ jobs:
           name: prompthub-desktop-${{ matrix.platform }}
           path: |
             src-tauri/target/*/release/bundle/**
+            src-tauri/target/release/bundle/**
             !**/*.map
           if-no-files-found: warn
